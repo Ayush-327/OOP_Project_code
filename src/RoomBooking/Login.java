@@ -1,3 +1,5 @@
+package RoomBooking;
+
 import java.util.Map;
 import java.util.Scanner;
 
@@ -7,6 +9,8 @@ public class Login {
 
     public int newUserLogin(){
         Scanner sc = new Scanner(System.in);
+//        System.out.println(this.getClass().getCanonicalName());
+
         System.out.println("-----Welcome to Registration Portal-----");
         System.out.println("Please provide the following details :- ");
         System.out.println("Enter Organization name (Type \"None\" if none) :");
@@ -16,12 +20,14 @@ public class Login {
         System.out.print("Enter ID : ");
         String id = sc.nextLine();
         User newUser = new User(name, id , org);
+        Thread userObject = new Thread(newUser);
+        userObject.start();
         System.out.print("Enter purpose : ");
         String purpose = sc.nextLine();
         System.out.print("Enter no. of students : ");
         int no_students = sc.nextInt();
-        System.out.println("Select the Room type: ");
-        System.out.println("Press 1 for NAB room with capacity of 60 students \nPress 2 for LTC room with capacity of 150 students \nPress 3 for Library Brainstorming room with capacity of 25 students");
+        System.out.println("Select the RoomBooking.Room type: ");
+        System.out.println("Press 1 for NAB Audi with capacity of 150 students \nPress 2 for LTC Hall with capacity of 100 students \nPress 3 for RoomBooking.Library Brainstorming room with capacity of 25 students");
         int roomtype = sc.nextInt();
         if(User.checkCapacity(no_students , roomtype)==1)
         { return 0;}
@@ -40,6 +46,7 @@ public class Login {
         System.out.println("---------------------------------");
         System.out.println("Press 0 to continue and 1 to exit");
         exit = sc.nextInt();
+        userObject.interrupt();
         return exit;
     }
 
@@ -48,7 +55,7 @@ public class Login {
         System.out.println("-----Login to existing account-----");
         System.out.print("Enter name : ");
         String name = sc.nextLine();
-        System.out.print("Enter ID : ");
+        System.out.print("Enter BITS ID : ");
         String id = sc.nextLine();
         int valid = 0;
         for (Map.Entry<String,String> userElement : Main.userList.entrySet()){
@@ -59,6 +66,8 @@ public class Login {
             System.out.println("Login successful !");
             System.out.println("-----Displaying Application Status-----");
             User newUser = new User(name, id);
+            Thread userObject = new Thread(newUser);
+            userObject.start();
             newUser.track(Main.requestList);
             System.out.println("---------------------------------");
             System.out.println("Press 1 for editing the purpose of application \nPress 2 for deleting the application");
@@ -70,12 +79,14 @@ public class Login {
                     System.out.print("Purpose edited successfully");
                     System.out.println("Press 0 to continue and 1 to exit");
                     exit = sc.nextInt();
+                    userObject.interrupt();
                     break;
                 case 2 : System.out.println("Deleting request.....");
                     newUser.deleteRequest(Main.requestList);
                     System.out.println("Request deleted successfully");
                     System.out.println("Press 0 to continue and 1 to exit");
                     exit = sc.nextInt();
+                    userObject.interrupt();
                     break;
             }
         }
@@ -87,29 +98,32 @@ public class Login {
         System.out.println("----Welcome to Admin Mode----");
         System.out.println("Enter Admin Id : ");
         String name = sc.next();
-        System.out.println("Enter Admin password : ");
+        System.out.println("Enter RoomBooking.Admin password : ");
         String password = sc.next();
         if(Main.admin.name .equals(name) && Main.admin.password.equals(password)){
             System.out.println("Admin login successful !");
             System.out.println("------------------------");
             int logout = 0 ;
             while(logout ==0) {
-                System.out.println("Press 1 to view all requests \nPress 2 to view all rooms \nPress 3 to logout");
+                System.out.println("Press 1 to view all pending requests \nPress 2 to view all rooms \nPress 3 to logout");
                 int choice4 = sc.nextInt();
                 switch (choice4) {
                     case 1: if(BookingRequest.totalRequests !=0){
-                        System.out.println("Displaying all requests");
+                        System.out.println("Displaying all pending requests");
                         Main.admin.getAllRequests(Main.requestList);
                         System.out.println("------------------------");
-                        System.out.println("Select a request (Enter request no.)");
+                        System.out.println("Select a request (Enter request no.) OR press 0 to logout");
                         int choice5 = sc.nextInt();
-                        Main.admin.showARequest(Main.requestList, choice5);
+                        if(choice5==0) {
+                            System.out.println("Logging out..........");
+                         logout=1 ; break;}
+                        int approved = Main.admin.showARequest(Main.requestList, choice5);
+                        if(approved == 0 ){
                         System.out.println("Press 1 to approve the request \nPress 2 to disapprove the request \nPress 3 to ask the applicant for a more elaborated purpose");
                         int choice6 = sc.nextInt();
-                        Main.admin.bookRoom(choice5, choice6);}
-                        else System.out.println("No requests");
+                        Main.admin.bookRoom(choice5, choice6); }  }
+                        else System.out.println("No pending requests");
                         System.out.println("------------------------");
-
                         break;
                     case 2:
                         System.out.println("Displaying all rooms");

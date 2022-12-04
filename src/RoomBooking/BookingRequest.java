@@ -1,4 +1,5 @@
-import java.awt.print.Book;
+package RoomBooking;
+
 import java.util.Calendar;
 
 public class BookingRequest {
@@ -13,6 +14,7 @@ public class BookingRequest {
    public int roomAlloted ;
    public String roomName;
 public int noOfStudents;
+public int  visibility ;
     public BookingRequest(User user , String purpose, int slotNo, int roomtype, String bookingStatus , int roomAlloted , int noOfStudents){
         this.user = user;
         this.bookingStatus = bookingStatus;
@@ -24,14 +26,23 @@ public int noOfStudents;
         this.requestNo = totalRequests ;
         this.roomAlloted = roomAlloted;
         this.noOfStudents = noOfStudents;
-        if(roomtype==1) setRoomName("Nab");
-        else if(roomtype==2) setRoomName("Ltc");
+        this.visibility = 1;
+        if(roomtype==1) setRoomName("RoomBooking.Nab");
+        else if(roomtype==2) setRoomName("RoomBooking.Ltc");
         else setRoomName("Lib");
 
     }
 
     public  int getRequestNo() {
         return requestNo;
+    }
+
+    public int getVisibility() {
+        return visibility;
+    }
+
+    public void setVisibility(int visibility) {
+        this.visibility = visibility;
     }
 
     public  void setRequestNo(int requestNo) {
@@ -115,16 +126,17 @@ public int noOfStudents;
     }
 
     public void printBookingDetails(){
-        System.out.println("Request number    : " + this.getRequestNo());
-        System.out.println("Applicant name    : " + this.getUser().getName());
-        System.out.println("Oragnization name : "+ this.getUser().getOrg());
-        System.out.println("No. of students   : " + this.noOfStudents);
-        System.out.println("Room requested    : " + this.getRoomName());
-        System.out.println("Slot requested    : " + BookingRequest.slotName(this.getSlotNo()));
-        System.out.println("Purpose           : " + this.getPurpose());
-        System.out.println("Booking Status    : " + this.isBookingStatus());
-        System.out.println("Admin Remark      : " + this.getAdminRemark());
-        System.out.println("Room Alloted      : " + this.getRoomAlloted());
+        System.out.println("Request number      : " + this.getRequestNo());
+        System.out.println("Applicant name      : " + this.getUser().getName());
+        System.out.println("Applicant's BITS Id : " + this.getUser().getId());
+        System.out.println("Oragnization name   : "+ this.getUser().getOrg());
+        System.out.println("No. of students     : " + this.noOfStudents);
+        System.out.println("Room requested      : " + this.getRoomName());
+        System.out.println("Slot requested      : " + BookingRequest.slotName(this.getSlotNo()));
+        System.out.println("Purpose             : " + this.getPurpose());
+        System.out.println("Booking Status      : " + this.isBookingStatus());
+        System.out.println("Admin Remark        : " + this.getAdminRemark());
+        System.out.println("Room Alloted        : " + this.getRoomAlloted());
     }
 
   public static String slotName(int slotNo){
@@ -175,24 +187,7 @@ public int noOfStudents;
               now.add(Calendar.DATE, 2);
               slotName = String.valueOf(now.get(Calendar.DATE) + "/" + now.get(Calendar.MONTH) + "/" + now.get(Calendar.YEAR)) + " " + "7:00pm - 8:00pm";
               break;
-          case (13):
-              now.add(Calendar.DATE, 3);
-              slotName = String.valueOf(now.get(Calendar.DATE) + "/" + now.get(Calendar.MONTH) + "/" + now.get(Calendar.YEAR)) + " " + "4:00pm - 5:00pm";
-              break;
-          case (14):
-              now.add(Calendar.DATE, 3);
-              slotName = String.valueOf(now.get(Calendar.DATE) + "/" + now.get(Calendar.MONTH) + "/" + now.get(Calendar.YEAR)) + " " + "5:00pm - 6:00pm";
-              break;
-          case (15):
-              now.add(Calendar.DATE, 3);
-              slotName = String.valueOf(now.get(Calendar.DATE) + "/" + now.get(Calendar.MONTH) + "/" + now.get(Calendar.YEAR)) + " " + "6:00pm - 7:00pm";
-              break;
-          case (16):
-              now.add(Calendar.DATE, 3);
-              slotName = String.valueOf(now.get(Calendar.DATE) + "/" + now.get(Calendar.MONTH) + "/" + now.get(Calendar.YEAR)) + " " + "7:00pm - 8:00pm";
-              break;
-
-      }
+               }
       return slotName ;
   }
 

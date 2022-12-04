@@ -1,3 +1,5 @@
+package RoomBooking;
+
 import java.util.*;
 
 public class Main {
@@ -7,12 +9,17 @@ public class Main {
     static Room ltc = new Ltc();
     static Room lib = new Library();
     static Admin admin = new Admin();
+    {
+        Thread adminObject = new Thread(admin);
+        adminObject.start();
+    }
 
     public static void main(String[] args) {
         Login login = new Login();
         Scanner sc = new Scanner(System.in);
         int exit = 0;
         while(exit !=1){
+
             System.out.println("-----Welcome to Room Booking Management System-----");
             System.out.println("Press 1 for User mode \nPress 2 for Admin mode \nPress 3 to exit");
             int choice1 = sc.nextInt() ;

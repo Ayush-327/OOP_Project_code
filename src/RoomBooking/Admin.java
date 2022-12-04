@@ -1,6 +1,8 @@
+package RoomBooking;
+
 import java.util.*;
 
-public class Admin {
+public class Admin implements Runnable {
     String name;
 String password;
     public Admin(){
@@ -8,16 +10,30 @@ String password;
         this.password = "admin";
     }
 
-    public void getAllRequests(List<BookingRequest> requests) {
+    public void run()
+    {
+        try {
+            // Displaying the thread that is running
+//            System.out.println(
+//                    "Thread " + Thread.currentThread().getId()
+//                            + " is running");
+        }
+        catch (Exception e) {
+            // Throwing an exception
+            System.out.println("Exception is caught");
+        }
+    }
+
+    public synchronized void getAllRequests(List<BookingRequest> requests) {
         for (BookingRequest request: requests) {
-            if (request.isBookingStatus() == null) {
+            if (request.isBookingStatus().equals("") && request.getVisibility()==1) {
                 request.printBookingDetails();
                 System.out.println("---------------------------------------------");
             }
         }
     }
 
-        public void bookRoom(int requestNo , int action ) {
+        public synchronized void bookRoom(int requestNo , int action ) {
             BookingRequest request = null;
             for (BookingRequest eachRequest : Main.requestList) {
                 if (eachRequest.getRequestNo() == requestNo) {
@@ -48,7 +64,7 @@ String password;
                 int booked = 0;
                 for (RoomStructure eachRoom : room.roomsList) {
                     if (eachRoom.slots.get(slotName) == null && booked == 0 && request.isBookingStatus().equals("") ) {
-                        booked = 1;
+                        booked = 1;  BookingRequest.totalRequests-- ;
                         eachRoom.slots.put(slotName, request.getUser());
                         request.setBookingStatus("Approved");
                         request.setAdminRemark("Request Approved." );
@@ -62,6 +78,7 @@ String password;
             else if(action==2){
                 request.setBookingStatus("Disapproved");
                 request.setAdminRemark("Request disapproved." );
+                BookingRequest.totalRequests-- ;
                 System.out.println("Request disapproved successfully");
             }
 
@@ -72,10 +89,17 @@ String password;
                 request.setAdminRemark(remark); }
         }
 
-    public void showARequest(List<BookingRequest> requests , int requestNo){
-        for (BookingRequest request: requests) {
-            if(request.getRequestNo() == requestNo)
-            { request.printBookingDetails(); break;}
+    public synchronized int showARequest(List<BookingRequest> requests , int requestNo){
+        int approved =0;
+        synchronized (requests) {
+            for (BookingRequest request : requests) {
+                if (request.getRequestNo() == requestNo && request.getVisibility()==1) {
+                    request.printBookingDetails();
+                    if (!request.isBookingStatus().equals("")) approved = 1;
+                    break;
+                }
+            }
         }
+        return approved;
     }
 }
